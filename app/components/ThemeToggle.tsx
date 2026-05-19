@@ -1,27 +1,41 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { useTheme } from "../theme-provider";
+import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
+  // Safely delay state changes to an asynchronous callback to avoid cascading renders
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  if (!mounted) return null; // Hydration fix
+  // Return a structural placeholder block during server-side pre-rendering execution passes
+  if (!mounted) {
+    return (
+      <div className="w-10 h-10 rounded-xl border border-neutral-200 dark:border-gray-800 bg-neutral-50 dark:bg-[#111827]" />
+    );
+  }
 
   return (
     <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="w-10 h-10 rounded-xl bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-800 dark:text-white transition-colors hover:bg-gray-300 dark:hover:bg-white/20"
-      aria-label="Toggle Theme"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="w-10 h-10 rounded-xl border border-neutral-200 dark:border-gray-800 bg-neutral-50 dark:bg-[#111827] flex items-center justify-center text-neutral-700 dark:text-gray-300 hover:border-secondary hover:text-secondary transition duration-300 cursor-pointer"
+      title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      aria-label="Toggle Theme Mode"
     >
-      {theme === 'dark' ? <FaSun size={18} /> : <FaMoon size={18} />}
+      {theme === "dark" ? (
+        <Sun size={18} className="animate-fadeIn" />
+      ) : (
+        <Moon size={18} className="animate-fadeIn" />
+      )}
     </button>
   );
 }

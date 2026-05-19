@@ -53,10 +53,10 @@ export default function ProductCard({ product }: Props) {
   return (
     <Link
       href={`/products/${product.productId || product._id}`}
-      className="group flex flex-col bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden hover:border-cyan-400 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10 max-w-sm"
+      className="group flex flex-col bg-white dark:bg-[#111827] border border-neutral-200 dark:border-gray-800 rounded-2xl overflow-hidden hover:border-secondary transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-secondary/10 max-w-sm"
     >
-      {/* IMAGE (Usa h-56 sita h-44 dakwa adu kala) */}
-      <div className="relative h-44 overflow-hidden bg-white">
+      {/* IMAGE */}
+      <div className="relative h-44 overflow-hidden bg-neutral-100 dark:bg-white">
         <Image
           src={imageUrl}
           alt={product.name || 'product'}
@@ -67,7 +67,7 @@ export default function ProductCard({ product }: Props) {
 
         {/* CATEGORY */}
         {product.category && (
-          <div className="absolute top-2 left-2 bg-cyan-400 text-black text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
+          <div className="absolute top-2 left-2 bg-secondary text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md">
             {product.category}
           </div>
         )}
@@ -98,40 +98,41 @@ export default function ProductCard({ product }: Props) {
         )}
       </div>
 
-      {/* CONTENT (Padding p-6 sita p-4 dakwa adu kala) */}
+      {/* CONTENT */}
       <div className="p-4 flex flex-col flex-1 justify-between">
         <div>
-          {/* BRAND (Margin mb-2 sita mb-1 dakwa adu kala) */}
+          {/* BRAND */}
           {product.brand && (
-            <p className="text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-1">
+            <p className="text-secondary text-xs font-semibold uppercase tracking-wider mb-1">
               {product.brand}
             </p>
           )}
 
-          {/* TITLE (min-h-15 ain karala text size eka lg kala) */}
-          <h2 className="text-lg font-bold text-white line-clamp-1">
+          {/* TITLE */}
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white line-clamp-1 transition-colors">
             {product.name}
           </h2>
 
-          {/* DESCRIPTION (Margin mt-3 sita mt-1 dakwa adu kala) */}
+          {/* DESCRIPTION */}
           {product.description && (
-            <p className="text-gray-400 text-xs mt-1 line-clamp-1">
+            <p className="text-neutral-500 dark:text-gray-400 text-xs mt-1 line-clamp-1">
               {product.description}
             </p>
           )}
 
-          {/* RATING (Margin mt-4 sita mt-2 dakwa adu kala) */}
+          {/* RATING */}
           <div className="flex items-center gap-1.5 mt-2">
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <FaStar
                   key={i}
                   size={12}
-                  color={i < Math.round(rating) ? '#f59e0b' : '#374151'}
+                  color={i < Math.round(rating) ? '#f59e0b' : '#d4d4d4'}
+                  className={i >= Math.round(rating) ? 'dark:text-neutral-700' : ''}
                 />
               ))}
             </div>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-neutral-500 dark:text-gray-400">
               {reviewCount > 0 ? `${rating.toFixed(1)} (${reviewCount})` : 'No reviews'}
             </span>
           </div>
@@ -139,28 +140,28 @@ export default function ProductCard({ product }: Props) {
 
         {/* PRICE & BUTTONS SECTION */}
         <div>
-          {/* PRICE (Usa adu kala saha size eka text-2xl kala) */}
+          {/* PRICE */}
           <div className="mt-3 flex items-baseline gap-2 flex-wrap">
-            <h3 className="text-2xl font-black text-cyan-400">
+            <h3 className="text-2xl font-black text-secondary">
               LKR {price.toLocaleString()}
             </h3>
             {hasDiscount && (
-              <p className="text-sm text-gray-500 line-through">
+              <p className="text-sm text-neutral-400 dark:text-gray-500 line-through">
                 LKR {labelPrice.toLocaleString()}
               </p>
             )}
           </div>
 
-          {/* BUTTONS (Usa h-14 sita py-2.5/h-11 dakwa adu kala) */}
+          {/* BUTTONS */}
           <div className="flex items-center gap-2 mt-4">
             {/* VIEW */}
-            <div className="flex-1 bg-cyan-400 text-black py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-cyan-300 transition duration-300 cursor-pointer">
+            <div className="flex-1 bg-secondary text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5 hover:bg-opacity-90 transition duration-300 cursor-pointer">
               <span>View</span>
               <FiArrowRight size={14} />
             </div>
 
             {/* CART */}
-            <button className="w-11 h-11 rounded-xl border border-gray-700 text-white hover:border-cyan-400 hover:bg-cyan-400/10 transition duration-300 text-xl flex items-center justify-center">
+            <button className="w-11 h-11 rounded-xl border border-neutral-200 dark:border-gray-700 text-neutral-800 dark:text-white hover:border-secondary hover:bg-secondary/10 transition duration-300 text-xl flex items-center justify-center">
               +
             </button>
           </div>
@@ -169,7 +170,7 @@ export default function ProductCard({ product }: Props) {
 
       {/* GLOW */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none">
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl" />
       </div>
     </Link>
   );

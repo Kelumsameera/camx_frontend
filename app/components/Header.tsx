@@ -1,264 +1,527 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { useState } from "react";
+import dynamic from "next/dynamic";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import {
-  Menu,
-  Search,
-  ShoppingCart,
-  User,
-  X,
-} from 'lucide-react';
+  RiPlayList2Fill,
+  RiShoppingBag3Fill,
+  RiInformationFill,
+  RiContactsBook2Fill,
+} from "react-icons/ri";
 
-import {
-  useEffect,
-  useState,
-} from 'react';
+import { FiShoppingCart } from "react-icons/fi";
+import { HiHome } from "react-icons/hi";
+import { X } from "lucide-react";
+
+/* DYNAMIC IMPORTS */
+const UserData = dynamic(() => import("./userData"), {
+  ssr: false,
+});
+
+const ThemeToggle = dynamic(() => import("./ThemeToggle"), {
+  ssr: false,
+});
 
 export default function Header() {
+  const [sideBarOpen, setSideBarOpen] = useState(false);
+
   const pathname = usePathname();
 
-  const [mobileMenu, setMobileMenu] =
-    useState(false);
-
-  const [isScrolled, setIsScrolled] =
-    useState(false);
-
-  // Detect scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener(
-      'scroll',
-      handleScroll
-    );
-
-    return () =>
-      window.removeEventListener(
-        'scroll',
-        handleScroll
-      );
-  }, []);
-
-  // Navigation links
-  const navLinks = [
-    {
-      name: 'Home',
-      href: '/',
-    },
-    {
-      name: 'Products',
-      href: '/products',
-    },
-    {
-      name: 'Services',
-      href: '/services',
-    },
-    {
-      name: 'About',
-      href: '/about',
-    },
-    {
-      name: 'Contact',
-      href: '/contact',
-    },
-  ];
+  // HIDE HEADER ON ADMIN ROUTES
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-[#050816]/90 backdrop-blur-xl border-b border-cyan-400/10 shadow-lg shadow-cyan-500/5'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6">
-
-        <div className="flex items-center justify-between h-20">
-
-          {/* LOGO */}
-          <Link
-            href="/"
-            className="flex items-center gap-4 group"
-          >
-            {/* LOGO IMAGE */}
-            <div className="relative w-32 h-32 transition duration-300 group-hover:scale-105">
-
-              <Image
-                src="/logo.png"
-                alt="CAMX.lk Logo"
-                fill
-                priority
-                className="object-contain drop-shadow-[0_0_20px_rgba(34,211,238,0.45)]"
-              />
-            </div>
-
-            {/* LOGO TEXT */}
-            <div>
-              <h1 className="text-2xl font-black tracking-wide text-white">
-                CAMX.lk
-              </h1>
-
-              <p className="text-xs text-cyan-400 tracking-[0.3em] uppercase">
-                SECURITY SOLUTIONS
-              </p>
-            </div>
-          </Link>
-
-          {/* DESKTOP NAVIGATION */}
-          <nav className="hidden lg:flex items-center gap-8">
-
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative text-sm font-semibold transition duration-300 hover:text-cyan-400 ${
-                  pathname === link.href
-                    ? 'text-cyan-400'
-                    : 'text-gray-300'
-                }`}
-              >
-                {link.name}
-
-                {pathname === link.href && (
-                  <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-cyan-400 rounded-full" />
-                )}
-              </Link>
-            ))}
-          </nav>
-
-          {/* RIGHT SIDE */}
-          <div className="hidden lg:flex items-center gap-4">
-
-            {/* SEARCH */}
-            <button className="w-11 h-11 rounded-xl border border-gray-800 bg-[#111827] flex items-center justify-center hover:border-cyan-400 hover:bg-cyan-400/10 transition duration-300">
-
-              <Search
-                size={20}
-                className="text-gray-300"
-              />
-            </button>
-
-            {/* CART */}
-            <Link
-              href="/cart"
-              className="relative w-11 h-11 rounded-xl border border-gray-800 bg-[#111827] flex items-center justify-center hover:border-cyan-400 hover:bg-cyan-400/10 transition duration-300"
-            >
-              <ShoppingCart
-                size={20}
-                className="text-gray-300"
-              />
-
-              {/* CART COUNT */}
-              <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cyan-400 text-black text-xs font-bold flex items-center justify-center">
-                0
-              </span>
-            </Link>
-
-            {/* ACCOUNT */}
-            <Link
-              href="/login"
-              className="w-11 h-11 rounded-xl border border-gray-800 bg-[#111827] flex items-center justify-center hover:border-cyan-400 hover:bg-cyan-400/10 transition duration-300"
-            >
-              <User
-                size={20}
-                className="text-gray-300"
-              />
-            </Link>
-
-            {/* CTA BUTTON */}
-            <Link
-              href="/contact"
-              className="bg-cyan-400 text-black px-6 py-3 rounded-xl font-bold hover:bg-cyan-300 hover:scale-105 transition duration-300 shadow-lg shadow-cyan-500/20"
-            >
-              Get Quote
-            </Link>
-          </div>
-
-          {/* MOBILE MENU BUTTON */}
+    <>
+      {/* HEADER */}
+      <header
+        className="
+          fixed
+          top-0
+          left-0
+          z-50
+          w-full
+          h-20
+          flex
+          items-center
+          justify-between
+          px-4
+          sm:px-6
+          bg-white/70
+          dark:bg-black/40
+          backdrop-blur-2xl
+          border-b
+          border-white/10
+          dark:border-white/5
+          shadow-[0_4px_30px_rgba(0,0,0,0.05)]
+          transition-all
+          duration-300
+        "
+      >
+        {/* MOBILE MENU BUTTON */}
+        <div className="flex items-center lg:hidden">
           <button
-            onClick={() =>
-              setMobileMenu(!mobileMenu)
-            }
-            className="lg:hidden w-11 h-11 rounded-xl border border-gray-800 bg-[#111827] flex items-center justify-center"
+            onClick={() => setSideBarOpen(true)}
+            className="
+              p-2
+              rounded-xl
+              text-foreground
+              hover:text-secondary
+              hover:bg-secondary/10
+              transition-all
+              duration-300
+            "
+            aria-label="Open Menu"
           >
-            {mobileMenu ? (
-              <X
-                size={22}
-                className="text-white"
-              />
-            ) : (
-              <Menu
-                size={22}
-                className="text-white"
-              />
-            )}
+            <RiPlayList2Fill size={24} />
           </button>
         </div>
-      </div>
 
-      {/* MOBILE MENU */}
-      {mobileMenu && (
-        <div className="lg:hidden bg-[#050816]/95 backdrop-blur-xl border-t border-cyan-400/10">
+        {/* LOGO */}
+        <div className="flex items-center">
+          <Link
+            href="/"
+            className="
+              relative
+              flex
+              items-center
+              justify-center
+              h-20
+              w-24
+            "
+          >
+            <Image
+              src="/logo.png"
+              alt="CAMX.lk Logo"
+              width={74}
+              height={74}
+              priority
+              className="
+                object-contain
+                hover:scale-105
+                transition-transform
+                duration-300
+              "
+            />
+          </Link>
+        </div>
 
-          <div className="px-6 py-6 flex flex-col gap-5">
+        {/* DESKTOP NAVIGATION */}
+        <nav
+          className="
+            hidden
+            lg:flex
+            items-center
+            gap-10
+            text-base
+            font-bold
+          "
+        >
+          {/* HOME */}
+          <Link
+            href="/"
+            className={`
+              relative
+              transition-all
+              duration-300
+              hover:text-secondary
+              after:absolute
+              after:left-0
+              after:-bottom-1
+              after:h-0.5
+              after:w-0
+              after:bg-secondary
+              after:transition-all
+              after:duration-300
+              hover:after:w-full
+              ${
+                pathname === "/"
+                  ? "text-secondary after:w-full"
+                  : "text-foreground"
+              }
+            `}
+          >
+            Home
+          </Link>
 
-            {/* MOBILE LINKS */}
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() =>
-                  setMobileMenu(false)
-                }
-                className={`text-lg font-semibold transition ${
-                  pathname === link.href
-                    ? 'text-cyan-400'
-                    : 'text-gray-300'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+          {/* PRODUCTS */}
+          <Link
+            href="/products"
+            className={`
+              relative
+              transition-all
+              duration-300
+              hover:text-secondary
+              after:absolute
+              after:left-0
+              after:-bottom-1
+              after:h-0.5
+              after:w-0
+              after:bg-secondary
+              after:transition-all
+              after:duration-300
+              hover:after:w-full
+              ${
+                pathname.startsWith("/products")
+                  ? "text-secondary after:w-full"
+                  : "text-foreground"
+              }
+            `}
+          >
+            Products
+          </Link>
 
-            {/* MOBILE ACTIONS */}
-            <div className="flex items-center gap-3 pt-4">
+          {/* ABOUT */}
+          <Link
+            href="/about"
+            className={`
+              relative
+              transition-all
+              duration-300
+              hover:text-secondary
+              after:absolute
+              after:left-0
+              after:-bottom-1
+              after:h-0.5
+              after:w-0
+              after:bg-secondary
+              after:transition-all
+              after:duration-300
+              hover:after:w-full
+              ${
+                pathname === "/about"
+                  ? "text-secondary after:w-full"
+                  : "text-foreground"
+              }
+            `}
+          >
+            About
+          </Link>
 
-              <Link
-                href="/cart"
-                className="flex-1 bg-[#111827] border border-gray-800 h-12 rounded-xl flex items-center justify-center hover:border-cyan-400 transition"
-              >
-                <ShoppingCart
-                  size={20}
-                  className="text-white"
+          {/* CONTACT */}
+          <Link
+            href="/contact"
+            className={`
+              relative
+              transition-all
+              duration-300
+              hover:text-secondary
+              after:absolute
+              after:left-0
+              after:-bottom-1
+              after:h-0.5
+              after:w-0
+              after:bg-secondary
+              after:transition-all
+              after:duration-300
+              hover:after:w-full
+              ${
+                pathname === "/contact"
+                  ? "text-secondary after:w-full"
+                  : "text-foreground"
+              }
+            `}
+          >
+            Contact
+          </Link>
+        </nav>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* USER DATA */}
+          <div className="hidden lg:block min-w-20">
+            <UserData />
+          </div>
+
+          {/* CART */}
+          <Link
+            href="/cart"
+            className="
+              text-secondary
+              hover:text-white
+              text-2xl
+              w-11
+              h-11
+              flex
+              items-center
+              justify-center
+              rounded-2xl
+              bg-white/70
+              dark:bg-white/5
+              backdrop-blur-xl
+              border
+              border-border
+              shadow-lg
+              hover:bg-secondary
+              hover:shadow-blue-500/20
+              hover:-translate-y-1
+              transition-all
+              duration-300
+            "
+          >
+            <FiShoppingCart size={20} />
+          </Link>
+
+          {/* THEME TOGGLE */}
+          <div className="hidden lg:flex items-center">
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE SIDEBAR */}
+      {sideBarOpen && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[55]
+            bg-black/70
+            backdrop-blur-sm
+            lg:hidden
+            animate-in
+            fade-in
+            duration-300
+          "
+        >
+          {/* SIDEBAR */}
+          <div
+            className="
+              relative
+              z-[60]
+              w-[85%]
+              max-w-[320px]
+              h-full
+              bg-white/95
+              dark:bg-black/95
+              backdrop-blur-3xl
+              border-r
+              border-white/10
+              dark:border-white/5
+              shadow-2xl
+              animate-in
+              slide-in-from-left
+              duration-300
+              flex
+              flex-col
+            "
+          >
+            {/* SIDEBAR HEADER */}
+            <div
+              className="
+                h-20
+                flex
+                items-center
+                justify-between
+                px-6
+                border-b
+                border-white/10
+                dark:border-white/5
+                bg-white/40
+                dark:bg-black/20
+                backdrop-blur-xl
+              "
+            >
+              <div className="relative w-20 h-16 flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="CAMX Logo"
+                  width={60}
+                  height={60}
+                  className="object-contain"
                 />
+              </div>
+
+              <button
+                onClick={() => setSideBarOpen(false)}
+                className="
+                  p-2
+                  rounded-xl
+                  hover:bg-secondary/10
+                  hover:text-secondary
+                  transition-all
+                  duration-300
+                "
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* MOBILE NAVIGATION */}
+            <div
+              className="
+                relative
+                z-10
+                flex
+                flex-col
+                gap-6
+                px-6
+                mt-10
+              "
+            >
+              {/* HOME */}
+              <Link
+                href="/"
+                onClick={() => setSideBarOpen(false)}
+                className={`
+                  flex
+                  items-center
+                  gap-4
+                  text-lg
+                  font-bold
+                  transition-all
+                  duration-300
+                  hover:text-secondary
+                  ${
+                    pathname === "/"
+                      ? "text-secondary"
+                      : "text-foreground"
+                  }
+                `}
+              >
+                <HiHome className="text-2xl text-neutral-400" />
+                Home
               </Link>
 
+              {/* PRODUCTS */}
               <Link
-                href="/login"
-                className="flex-1 bg-[#111827] border border-gray-800 h-12 rounded-xl flex items-center justify-center hover:border-cyan-400 transition"
+                href="/products"
+                onClick={() => setSideBarOpen(false)}
+                className={`
+                  flex
+                  items-center
+                  gap-4
+                  text-lg
+                  font-bold
+                  transition-all
+                  duration-300
+                  hover:text-secondary
+                  ${
+                    pathname.startsWith("/products")
+                      ? "text-secondary"
+                      : "text-foreground"
+                  }
+                `}
               >
-                <User
-                  size={20}
-                  className="text-white"
-                />
+                <RiShoppingBag3Fill className="text-2xl text-neutral-400" />
+                Products
+              </Link>
+
+              {/* ABOUT */}
+              <Link
+                href="/about"
+                onClick={() => setSideBarOpen(false)}
+                className={`
+                  flex
+                  items-center
+                  gap-4
+                  text-lg
+                  font-bold
+                  transition-all
+                  duration-300
+                  hover:text-secondary
+                  ${
+                    pathname === "/about"
+                      ? "text-secondary"
+                      : "text-foreground"
+                  }
+                `}
+              >
+                <RiInformationFill className="text-2xl text-neutral-400" />
+                About
+              </Link>
+
+              {/* CONTACT */}
+              <Link
+                href="/contact"
+                onClick={() => setSideBarOpen(false)}
+                className={`
+                  flex
+                  items-center
+                  gap-4
+                  text-lg
+                  font-bold
+                  transition-all
+                  duration-300
+                  hover:text-secondary
+                  ${
+                    pathname === "/contact"
+                      ? "text-secondary"
+                      : "text-foreground"
+                  }
+                `}
+              >
+                <RiContactsBook2Fill className="text-2xl text-neutral-400" />
+                Contact
               </Link>
             </div>
 
-            {/* MOBILE CTA */}
-            <Link
-              href="/contact"
-              className="bg-cyan-400 text-black py-3 rounded-xl text-center font-bold hover:bg-cyan-300 transition"
+            {/* FOOTER */}
+            <div
+              className="
+                mt-auto
+                mb-8
+                mx-4
+                p-5
+                rounded-3xl
+                bg-white/40
+                dark:bg-white/5
+                backdrop-blur-2xl
+                border
+                border-white/10
+                dark:border-white/5
+                shadow-sm
+                flex
+                flex-col
+                gap-5
+              "
             >
-              Request Installation
-            </Link>
+              {/* USER */}
+              <div className="w-full">
+                <UserData compact={true} />
+              </div>
+
+              {/* THEME */}
+              <div
+                className="
+                  pt-4
+                  border-t
+                  border-border/50
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+                <span
+                  className="
+                    text-xs
+                    uppercase
+                    tracking-wider
+                    font-bold
+                    text-neutral-400
+                  "
+                >
+                  Appearance
+                </span>
+
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
+
+          {/* BACKDROP */}
+          <div
+            onClick={() => setSideBarOpen(false)}
+            className="absolute inset-0 -z-10"
+          />
         </div>
       )}
-    </header>
+    </>
   );
 }
