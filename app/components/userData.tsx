@@ -231,7 +231,7 @@ export default function UserData({
 
         {/* NAME */}
         {!compact && (
-          <span className="hidden lg:block text-sm font-semibold text-white">
+          <span className="hidden lg:block text-sm font-semibold text-light-black dark:text-white truncate">
             {user.name}
           </span>
         )}
@@ -259,7 +259,7 @@ export default function UserData({
 
                 <div className="min-w-0">
 
-                  <p className="font-bold text-gray-900 dark:text-white truncate">
+                  <p className="font-bold text-light-black dark:text-white truncate">
                     {user.name}
                   </p>
 
